@@ -102,14 +102,27 @@ p { font-size: 1.2rem; line-height: 1.6; }
 #lightbox-controls button:hover { background: #00cc00; }
 /* Konfeti Canvas */
 canvas { position: fixed; top:0; left:0; pointer-events: none; z-index:5; }
+#music-btn {
+  display: inline-block;
+  margin: 15px auto;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: #00ff00;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+#music-btn:hover { background: #00cc00; }
 @media(max-width:600px){ .gallery-item{ width: 90%; } }
 </style>
 </head>
 <body>
 
-<!-- Müzik -->
-<audio id="bg-music" loop controls>
-  <source src="https://veyselyigit21.github.io/yusufdemir.com/muzik.mp3" type="audio/mpeg">
+<!-- Müzik Başlat Butonu -->
+<button id="music-btn">Müziği Başlat 🎵</button>
+<audio id="bg-music" loop>
+  <source src="https://veyselyigit21.github.io/yusufdemir.com/muzik1.mp3" type="audio/mpeg">
 </audio>
 
 <!-- Konfeti Canvas -->
@@ -141,117 +154,100 @@ Seni çok seviyoruz ve senin gibi bir dayıya sahip olduğumuz için şanslıyı
   <img id="lightbox-img" src="">
   <video id="lightbox-video" controls></video>
   <div id="lightbox-controls">
-    <button id="prev">◀ Önceki</button>
-    <button id="next">Sonraki ▶</button>
+    <button id="prev">◀</button>
+    <button id="next">▶</button>
   </div>
 </div>
 
 <script>
-// Galeri elemanları
+// Müzik başlat butonu
+const bgMusic = document.getElementById('bg-music');
+const musicBtn = document.getElementById('music-btn');
+musicBtn.addEventListener('click', () => {
+    bgMusic.volume = 0.5;
+    bgMusic.play().then(() => {
+        console.log("Müzik çalıyor!");
+    }).catch(err => console.error("Müzik çalamadı:", err));
+    musicBtn.style.display = 'none';
+});
+
+// Galeri
 const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
 let currentIndex = 0;
 
-// Lightbox
+// Lightbox elemanları
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightbox-img');
 const lightboxVideo = document.getElementById('lightbox-video');
 const closeBtn = document.getElementById('lightbox-close');
 const prevBtn = document.getElementById('prev');
 const nextBtn = document.getElementById('next');
-const bgMusic = document.getElementById('bg-music');
 
-// Lightbox açma
-galleryItems.forEach((item, i) => {
-  item.addEventListener('click', () => {
-    currentIndex = i;
+// Açma
+galleryItems.forEach((item,i)=>{
+  item.addEventListener('click',()=>{
+    currentIndex=i;
     openLightbox(currentIndex);
   });
 });
 
-function openLightbox(index) {
+function openLightbox(index){
   const item = galleryItems[index];
   const img = item.querySelector('img');
   const video = item.querySelector('video');
   if(img){
     lightboxImg.src = img.src;
-    lightboxImg.style.display = 'block';
-    lightboxVideo.style.display = 'none';
+    lightboxImg.style.display='block';
+    lightboxVideo.style.display='none';
+    lightboxVideo.pause();
+    bgMusic.play();
   } else if(video){
     lightboxVideo.src = video.src;
-    lightboxVideo.style.display = 'block';
-    lightboxImg.style.display = 'none';
+    lightboxVideo.style.display='block';
+    lightboxImg.style.display='none';
     lightboxVideo.play();
     bgMusic.pause();
   }
-  lightbox.style.display = 'flex';
+  lightbox.style.display='flex';
 }
 
-// Lightbox kapatma
-closeBtn.addEventListener('click', closeLightbox);
-lightbox.addEventListener('click', e=>{if(e.target===lightbox) closeLightbox();});
+// Kapatma
 function closeLightbox(){
   lightbox.style.display='none';
   lightboxVideo.pause();
-  lightboxVideo.currentTime = 0;
+  lightboxVideo.currentTime=0;
   bgMusic.play();
 }
+closeBtn.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e=>{if(e.target===lightbox) closeLightbox();});
 
-// İleri / Geri butonları
-prevBtn.addEventListener('click', () => {
-  currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+// Önceki / Sonraki
+prevBtn.addEventListener('click',()=>{
+  currentIndex=(currentIndex-1+galleryItems.length)%galleryItems.length;
   openLightbox(currentIndex);
 });
-nextBtn.addEventListener('click', () => {
-  currentIndex = (currentIndex + 1) % galleryItems.length;
+nextBtn.addEventListener('click',()=>{
+  currentIndex=(currentIndex+1)%galleryItems.length;
   openLightbox(currentIndex);
 });
 
 // Konfeti
-const canvas = document.getElementById('confetti');
-const ctx = canvas.getContext('2d');
-let W = window.innerWidth;
-let H = window.innerHeight;
-canvas.width = W;
-canvas.height = H;
-const confettiCount = 150;
-const confetti = [];
-function randomColor() {
-  const colors = ['#00ff00','#00cc00','#009900','#00ff99'];
-  return colors[Math.floor(Math.random()*colors.length)];
-}
-function Confetto() {
-  this.x = Math.random()*W;
-  this.y = Math.random()*H-H;
-  this.radius = Math.random()*6+4;
-  this.color = randomColor();
-  this.speed = Math.random()*3+2;
-  this.angle = Math.random()*360;
-  this.spin = Math.random()*0.2-0.1;
-}
-Confetto.prototype.update = function(){
-  this.y += this.speed;
-  this.angle += this.spin;
-  if(this.y>H){ this.y=-10; this.x=Math.random()*W; }
-};
-Confetto.prototype.draw = function(){
-  ctx.save();
-  ctx.translate(this.x,this.y);
-  ctx.rotate(this.angle);
-  ctx.fillStyle=this.color;
-  ctx.fillRect(-this.radius/2,-this.radius/2,this.radius,this.radius);
-  ctx.restore();
-};
-for(let i=0;i<confettiCount;i++){ confetti.push(new Confetto()); }
-function animate(){
-  ctx.clearRect(0,0,W,H);
-  confetti.forEach(c=>{ c.update(); c.draw(); });
-  requestAnimationFrame(animate);
-}
+const canvas=document.getElementById('confetti');
+const ctx=canvas.getContext('2d');
+let W=window.innerWidth;
+let H=window.innerHeight;
+canvas.width=W;
+canvas.height=H;
+const confettiCount=150;
+const confetti=[];
+function randomColor(){const colors=['#00ff00','#00cc00','#009900','#00ff99'];return colors[Math.floor(Math.random()*colors.length)];}
+function Confetto(){this.x=Math.random()*W;this.y=Math.random()*H-H;this.radius=Math.random()*6+4;this.color=randomColor();this.speed=Math.random()*3+2;this.angle=Math.random()*360;this.spin=Math.random()*0.2-0.1;}
+Confetto.prototype.update=function(){this.y+=this.speed;this.angle+=this.spin;if(this.y>H){this.y=-10;this.x=Math.random()*W;}};
+Confetto.prototype.draw=function(){ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.angle);ctx.fillStyle=this.color;ctx.fillRect(-this.radius/2,-this.radius/2,this.radius,this.radius);ctx.restore();};
+for(let i=0;i<confettiCount;i++){confetti.push(new Confetto());}
+function animate(){ctx.clearRect(0,0,W,H);confetti.forEach(c=>{c.update();c.draw();});requestAnimationFrame(animate);}
 animate();
-window.addEventListener('resize', ()=>{
-  W=window.innerWidth; H=window.innerHeight;
-  canvas.width=W; canvas.height=H;
-});
+window.addEventListener('resize',()=>{W=window.innerWidth;H=window.innerHeight;canvas.width=W;canvas.height=H;});
 </script>
 </body>
 </html>
