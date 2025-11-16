@@ -109,23 +109,37 @@
       z-index: 5;
     }
 
-    audio {
-      display: none;
-    }
-
     @media(max-width:600px){
       .gallery-item{
         width: 90%;
       }
     }
+
+    #music-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: #00ff00;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    #music-btn:hover {
+      background: #00cc00;
+    }
   </style>
 </head>
 <body>
   <!-- Müzik -->
-  <audio id="bg-music" autoplay loop>
-    <source src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/muzik1.mp3" type="audio/mpeg">
+  <audio id="bg-music" loop>
+    <source src="https://veyselyigit21.github.io/yusufdemir.com/muzik1.mp3" type="audio/mpeg">
     Tarayıcınız audio elementini desteklemiyor.
   </audio>
+  <div>
+    <button id="music-btn">Müziği Başlat 🎵</button>
+  </div>
 
   <!-- Konfeti Canvas -->
   <canvas id="confetti"></canvas>
@@ -141,15 +155,15 @@
     <!-- Galeri -->
     <div class="gallery">
       <!-- Fotoğraflar -->
-      <div class="gallery-item"><img src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/foto1.jpg" alt=""></div>
-      <div class="gallery-item"><img src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/foto2.jpg" alt=""></div>
-      <div class="gallery-item"><img src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/foto3.jpg" alt=""></div>
-      <div class="gallery-item"><img src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/foto4.jpg" alt=""></div>
+      <div class="gallery-item"><img src="https://veyselyigit21.github.io/yusufdemir.com/foto1.jpg" alt=""></div>
+      <div class="gallery-item"><img src="https://veyselyigit21.github.io/yusufdemir.com/foto2.jpg" alt=""></div>
+      <div class="gallery-item"><img src="https://veyselyigit21.github.io/yusufdemir.com/foto3.jpg" alt=""></div>
+      <div class="gallery-item"><img src="https://veyselyigit21.github.io/yusufdemir.com/foto4.jpg" alt=""></div>
 
       <!-- Videolar -->
-      <div class="gallery-item"><video src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/video1.mp4" muted></video></div>
-      <div class="gallery-item"><video src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/video2.mp4" muted></video></div>
-      <div class="gallery-item"><video src="https://raw.githubusercontent.com/Veyselyigit21/yusufdemir.com/main/video3.mp4" muted></video></div>
+      <div class="gallery-item"><video src="https://veyselyigit21.github.io/yusufdemir.com/video1.mp4" muted></video></div>
+      <div class="gallery-item"><video src="https://veyselyigit21.github.io/yusufdemir.com/video2.mp4" muted></video></div>
+      <div class="gallery-item"><video src="https://veyselyigit21.github.io/yusufdemir.com/video3.mp4" muted></video></div>
     </div>
   </div>
 
@@ -162,6 +176,11 @@
 
   <script>
     const bgMusic = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    musicBtn.addEventListener('click', ()=>{
+      bgMusic.play();
+    });
+
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxVideo = document.getElementById('lightbox-video');
@@ -270,5 +289,5 @@
     });
   </script>
 </body>
-
 </html>
+
