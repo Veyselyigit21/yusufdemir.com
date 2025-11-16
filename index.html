@@ -135,7 +135,6 @@
   <!-- Müzik -->
   <audio id="bg-music" loop>
     <source src="https://veyselyigit21.github.io/yusufdemir.com/muzik.mp3" type="audio/mpeg">
-    Tarayıcınız audio elementini desteklemiyor.
   </audio>
   <div>
     <button id="music-btn">Müziği Başlat 🎵</button>
@@ -175,18 +174,25 @@
   </div>
 
   <script>
+    // Müzik butonu
     const bgMusic = document.getElementById('bg-music');
     const musicBtn = document.getElementById('music-btn');
-    musicBtn.addEventListener('click', ()=>{
-      bgMusic.play();
+    musicBtn.addEventListener('click', () => {
+        bgMusic.volume = 0.5;
+        bgMusic.play().then(() => {
+            console.log("Müzik çalıyor!");
+        }).catch(err => {
+            console.error("Müzik çalamadı:", err);
+        });
+        musicBtn.style.display = 'none'; // Butonu gizle
     });
 
+    // Lightbox
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxVideo = document.getElementById('lightbox-video');
     const closeBtn = document.getElementById('lightbox-close');
 
-    // Lightbox işlevi
     document.querySelectorAll('.gallery-item').forEach(item => {
       item.addEventListener('click', () => {
         const img = item.querySelector('img');
@@ -202,18 +208,17 @@
           lightboxVideo.style.display = 'block';
           lightboxImg.style.display = 'none';
           lightboxVideo.play();
-          bgMusic.pause(); // Video oynayınca müzik durur
+          bgMusic.pause();
         }
         lightbox.style.display = 'flex';
       });
     });
 
-    // Kapatma
     closeBtn.addEventListener('click', () => {
       lightbox.style.display = 'none';
       lightboxVideo.pause();
       lightboxVideo.currentTime = 0;
-      bgMusic.play(); // Müzik tekrar başlar
+      bgMusic.play();
     });
 
     lightbox.addEventListener('click', (e)=>{
@@ -221,11 +226,11 @@
         lightbox.style.display='none';
         lightboxVideo.pause();
         lightboxVideo.currentTime = 0;
-        bgMusic.play(); // Müzik tekrar başlar
+        bgMusic.play();
       }
     });
 
-    // Konfeti animasyonu
+    // Konfeti
     const canvas = document.getElementById('confetti');
     const ctx = canvas.getContext('2d');
     let W = window.innerWidth;
@@ -290,4 +295,3 @@
   </script>
 </body>
 </html>
-
